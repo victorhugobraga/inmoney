@@ -2,8 +2,8 @@ import { ReactNode } from "react";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-import SidebarDashboard from "@/components/dashboard/sidebar";
 import HeaderDashboard from "@/components/dashboard/header";
+import SidebarDashboard from "@/components/dashboard/sidebar";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -13,6 +13,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           <SidebarDashboard />
           <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
             <HeaderDashboard />
+
             {children}
           </div>
         </div>
