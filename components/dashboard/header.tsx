@@ -120,7 +120,7 @@ export default function HeaderDashboard() {
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
           type="search"
-          placeholder="Search..."
+          placeholder="Pesquisa..."
           className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
         />
       </div>
@@ -135,13 +135,13 @@ export default function HeaderDashboard() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setTheme("light")}>
-            Light
+            Claro
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setTheme("dark")}>
-            Dark
+            Escuro
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setTheme("system")}>
-            System
+            Sistema
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -160,12 +160,12 @@ export default function HeaderDashboard() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
+          <DropdownMenuItem>Configurações</DropdownMenuItem>
+          <DropdownMenuItem>Suporte</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem>Sair</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
