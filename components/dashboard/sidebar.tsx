@@ -46,10 +46,10 @@ export default function SidebarDashboard() {
               )} transition-colors hover:text-foreground md:h-8 md:w-8`}
             >
               <Wallet className="h-5 w-5" />
-              <span className="sr-only">Wallet</span>
+              <span className="sr-only">Carteira</span>
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">Wallet</TooltipContent>
+          <TooltipContent side="right">Carteira</TooltipContent>
         </Tooltip>
 
         <Tooltip>
@@ -61,10 +61,10 @@ export default function SidebarDashboard() {
               )} transition-colors hover:text-foreground md:h-8 md:w-8`}
             >
               <Lightbulb className="h-5 w-5" />
-              <span className="sr-only">Learn</span>
+              <span className="sr-only">Cursos</span>
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">Learn</TooltipContent>
+          <TooltipContent side="right">Cursos</TooltipContent>
         </Tooltip>
 
         <Tooltip>
@@ -77,7 +77,7 @@ export default function SidebarDashboard() {
               <span className="sr-only">Analytics</span>
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">Comming Soon</TooltipContent>
+          <TooltipContent side="right">Em Breve</TooltipContent>
         </Tooltip>
       </nav>
 
@@ -91,10 +91,10 @@ export default function SidebarDashboard() {
               )} transition-colors hover:text-foreground md:h-8 md:w-8`}
             >
               <Settings className="h-5 w-5" />
-              <span className="sr-only">Settings</span>
+              <span className="sr-only">Configurações</span>
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">Settings</TooltipContent>
+          <TooltipContent side="right">Configurações</TooltipContent>
         </Tooltip>
       </nav>
     </aside>
