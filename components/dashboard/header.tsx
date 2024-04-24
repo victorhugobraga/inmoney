@@ -97,7 +97,7 @@ export default function HeaderDashboard() {
 
         <Link href={Pages.Dashboard} className="hidden sm:dark:block my-auto">
           <Image
-            src="/inmoney-white.png"
+            src="/inmoney-white.svg"
             alt="InMoney"
             width={165}
             height={29.5}
