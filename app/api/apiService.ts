@@ -1,7 +1,13 @@
+import { DefaultResponse, LoginData } from "../types/api/session";
+
 export class ApiService {
   private static readonly url: string = process.env.NEXT_PUBLIC_API_URL;
 
-  static async signUp(name: string, email: string, password: string) {
+  static async signUp(
+    name: string,
+    email: string,
+    password: string
+  ): Promise<DefaultResponse> {
     const response = await fetch(`${this.url}/user/register`, {
       method: "POST",
       headers: {
@@ -10,18 +16,42 @@ export class ApiService {
       body: JSON.stringify({ name, email, password }),
     });
 
-    return await response.json();
+    if (response.ok) {
+      return {
+        success: true,
+      };
+    }
+    return {
+      success: false,
+      message: "Falha ao conectar ao servidor. Tente novamente mais tarde.",
+    };
   }
 
-  static async login(email: string, password: string) {
-    const response = await fetch(`${this.url}/login`, {
+  static async login(
+    email: string,
+    password: string
+  ): Promise<DefaultResponse<LoginData>> {
+    const response = await fetch(`${this.url}/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
     });
+    const data: LoginData = await response.json();
 
-    return await response.json();
+    if (response.ok)
+      return {
+        success: true,
+        data: {
+          token: data.token,
+          expiration_date: new Date(data.expiration_date),
+        },
+      };
+
+    return {
+      success: false,
+      message: data.detail ?? "Email ou senha inválidos",
+    };
   }
 }

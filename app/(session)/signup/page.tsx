@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { ApiService } from "@/app/api/apiService";
+import { useRouter } from "next/navigation";
 import Notiflix from "notiflix";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -35,6 +36,7 @@ export default function SignUp() {
       password: "",
     },
   });
+  const router = useRouter();
 
   const submitOnEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -50,19 +52,9 @@ export default function SignUp() {
     Notiflix.Loading.pulse("Criando a sua conta...");
     try {
       const signUpResponse = await ApiService.signUp(name, email, password);
-
-      console.log(signUpResponse);
-      return;
       if (!signUpResponse.success) throw new Error(signUpResponse.message);
 
-      Notiflix.Report.success(
-        "Sucesso",
-        "Sua conta foi criada com sucesso.",
-        "Ok",
-        () => {
-          window.location.href = "/login";
-        }
-      );
+      router.push("/login");
     } catch (error) {
       Notiflix.Report.failure(
         "Erro",

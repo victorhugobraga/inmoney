@@ -4,8 +4,16 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 import HeaderDashboard from "@/components/dashboard/header";
 import SidebarDashboard from "@/components/dashboard/sidebar";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const cookiesStore = cookies();
+
+  if (!cookiesStore.get("inmoney_session")) {
+    redirect("/login");
+  }
+
   return (
     <>
       <TooltipProvider>

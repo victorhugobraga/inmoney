@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
+import cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 import Notiflix from "notiflix";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -30,26 +32,38 @@ export default function Login() {
       password: "",
     },
   });
+  const router = useRouter();
+  const cookiesSession = cookies.get("inmoney_session");
+
+  useEffect(() => {
+    if (cookiesSession) {
+      router.push("/dashboard");
+    }
+  }, [cookiesSession, router]);
+
+  const submitOnEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSubmit(handleLogin);
+    }
+  };
 
   const handleLogin = async ({ email, password }: LoginData) => {
     Notiflix.Loading.pulse("Entrando...");
     try {
       const loginResponse = await ApiService.login(email, password);
 
-      if (!loginResponse.success) throw new Error(loginResponse.message);
-      if (loginResponse)
-        Notiflix.Report.success(
-          "Sucesso",
-          "Você entrou na sua conta.",
-          "Ok",
-          () => {
-            window.location.href = "/";
-          }
-        );
-    } catch (error) {
+      if (!loginResponse.success || !loginResponse?.data)
+        throw new Error(loginResponse.message);
+
+      cookies.set("inmoney_session", loginResponse.data.token, {
+        value: loginResponse.data.token,
+        expires: loginResponse.data.expiration_date,
+      });
+      router.push("/dashboard");
+    } catch (error: any) {
       Notiflix.Report.failure(
         "Erro",
-        "Ocorreu um erro ao carregar os seus dados.",
+        error?.message ?? "Ocorreu um erro ao carregar os seus dados.",
         "Ok"
       );
     } finally {
@@ -71,15 +85,18 @@ export default function Login() {
       </div>
 
       <form onSubmit={handleSubmit(handleLogin)} className="grid gap-8">
-        <div className="grid gap-2">
+        <div className="grid gap-2 relative">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
             type="email"
             placeholder="nome@email.com"
-            required
+            onKeyDown={(e) => submitOnEnter(e)}
             {...register("email")}
           />
+          <span className="text-xs absolute right-0 text-muted-foreground">
+            {errors.email ? errors.email.message : " "}
+          </span>
         </div>
         <div className="grid gap-2 relative">
           <div className="flex items-center">
@@ -94,7 +111,7 @@ export default function Login() {
           <Input
             id="password"
             type="password"
-            required
+            placeholder="Sua senha"
             {...register("password")}
           />
           <span className="text-xs absolute right-0 text-muted-foreground">
