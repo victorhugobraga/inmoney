@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 
+import FooterDashboard from "@/components/dashboard/footer";
 import HeaderDashboard from "@/components/dashboard/header";
 import SidebarDashboard from "@/components/dashboard/sidebar";
 import { cookies } from "next/headers";
@@ -23,6 +24,8 @@ export default function Layout({ children }: { children: ReactNode }) {
             <HeaderDashboard />
 
             {children}
+
+            <FooterDashboard />
           </div>
         </div>
       </TooltipProvider>

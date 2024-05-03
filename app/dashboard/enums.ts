@@ -5,4 +5,5 @@ export enum Pages {
   Customers = "/dashboard/customers",
   Analytics = "/dashboard/analytics",
   Settings = "/dashboard/settings",
+  Account = "/dashboard/account",
 }
