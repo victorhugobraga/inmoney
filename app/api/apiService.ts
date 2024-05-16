@@ -1,4 +1,5 @@
-import { DefaultResponse, LoginData } from "../types/api/session";
+import { AccountUser } from "@/types/api/account";
+import { DefaultResponse, LoginData } from "../../types/api/session";
 
 export class ApiService {
   private static readonly url: string = process.env.NEXT_PUBLIC_API_URL;
@@ -48,6 +49,28 @@ export class ApiService {
           expiration_date: new Date(data.expiration_date),
         },
       };
+
+    return {
+      success: false,
+      message: data.detail ?? "Email ou senha inválidos",
+    };
+  }
+
+  static async getUser(token: string): Promise<DefaultResponse<AccountUser>> {
+    const response = await fetch(`${this.url}/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const data: AccountUser = await response.json();
+
+    if (response.ok) {
+      return {
+        success: true,
+        data: data,
+      };
+    }
 
     return {
       success: false,

@@ -1,4 +1,4 @@
-import QuickActions from "@/components/dashboard/wallet/quickActions";
+import Cards from "@/components/dashboard/wallet/cards";
 import Transactions from "@/components/dashboard/wallet/transactions";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,13 +9,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ArrowDownSquare, ArrowUpSquare, Repeat } from "lucide-react";
 
 export default function Wallet() {
@@ -26,6 +29,7 @@ export default function Wallet() {
           <CardHeader>
             <CardTitle>Saldo</CardTitle>
           </CardHeader>
+
           <CardContent className="flex items-center justify-between">
             <div className="space-y-1">
               <div className="text-3xl font-bold">R$ 12.345,67</div>
@@ -34,11 +38,39 @@ export default function Wallet() {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="grid gap-3 sm:hidden">
-            <Button variant="outline" className="w-full">
-              <ArrowUpSquare className="w-5 h-5 mr-2" />
-              Receita
-            </Button>
+
+          <CardFooter className="grid gap-3 grid-cols-3">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="w-full">
+                  <ArrowUpSquare className="w-5 h-5 mr-2" />
+                  Receita
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader className="space-y-4">
+                  <DialogTitle>Cadastrar Receita</DialogTitle>
+                </DialogHeader>
+                <DialogDescription>
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nome</Label>
+                    <Input id="name" placeholder="Digite o seu nome" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" placeholder="Digite o seu email" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="avatar">Avatar</Label>
+                    <Input id="avatar" type="file" />
+                  </div>
+                </DialogDescription>
+                <DialogFooter>
+                  <Button>Salvar</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
             <Button variant="outline">
               <ArrowDownSquare className="w-5 h-5 mr-2" />
               Despesa
@@ -86,7 +118,7 @@ export default function Wallet() {
             </div>
           </CardContent>
         </Card>
-        <QuickActions />
+        <Cards />
       </div>
       <Transactions />
     </main>

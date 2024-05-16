@@ -4,7 +4,7 @@ export interface DefaultResponse<T = {}> {
   data?: T;
 }
 
-interface ErrorSchema {
+export interface ErrorSchema {
   title?: string;
   status?: number;
   detail?: string;
