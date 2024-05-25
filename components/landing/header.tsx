@@ -15,16 +15,16 @@ export default function HeaderLanding() {
   const { setTheme } = useTheme();
   return (
     <header className="flex items-center justify-between h-16 px-4 md:px-6 border-b">
-      <Link className="flex items-center" href="#">
-        <Link href="/" className="hidden sm:dark:block my-auto">
+      <div className="flex items-center">
+        <Link href="/" className="hidden dark:block my-auto w-24 sm:w-full">
           <Image
             src="/inmoney-white.svg"
             alt="InMoney"
-            width={165} 
+            width={165}
             height={29.5}
           />
         </Link>
-        <Link href="/" className="dark:hidden sm:block my-auto">
+        <Link href="/" className="dark:hidden sm:block my-auto w-24 sm:w-full">
           <Image
             src="/inmoney-black.png"
             alt="InMoney"
@@ -32,7 +32,7 @@ export default function HeaderLanding() {
             height={29.5}
           />
         </Link>
-      </Link>
+      </div>
       <div className="flex items-center space-x-4">
         <Link
           className="inline-flex h-9 items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"

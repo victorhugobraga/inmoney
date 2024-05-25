@@ -77,4 +77,24 @@ export class ApiService {
       message: data.detail ?? "Email ou senha inválidos",
     };
   }
+
+  static async submitNewsletter(email: string): Promise<DefaultResponse> {
+    const response = await fetch(`${this.url}/newsletter?email=${email}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+
+    if (response.ok) {
+      return {
+        success: true,
+      };
+    }
+    return {
+      success: false,
+      message: "Falha ao conectar ao servidor. Tente novamente mais tarde.",
+    };
+  }
 }
