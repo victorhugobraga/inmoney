@@ -79,13 +79,12 @@ export class ApiService {
   }
 
   static async submitNewsletter(email: string): Promise<DefaultResponse> {
-    const response = await fetch(`${this.url}/newsletter?email=${email}`, {
+    const response = await fetch(`${this.url}/user/newsletter?email=${email}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
     });
-    const data = await response.json();
 
     if (response.ok) {
       return {
