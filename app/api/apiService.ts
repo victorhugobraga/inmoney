@@ -1,4 +1,5 @@
 import { AccountUser } from "@/types/api/account";
+import { IIncreaseRevenue } from "@/types/api/wallet";
 import { DefaultResponse, LoginData } from "../../types/api/session";
 
 export class ApiService {
@@ -80,6 +81,27 @@ export class ApiService {
 
   static async submitNewsletter(email: string): Promise<DefaultResponse> {
     const response = await fetch(`${this.url}/user/newsletter?email=${email}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      return {
+        success: true,
+      };
+    }
+    return {
+      success: false,
+      message: "Falha ao conectar ao servidor. Tente novamente mais tarde.",
+    };
+  }
+
+  static async increaseRevenue(
+    addRevenue: IIncreaseRevenue
+  ): Promise<DefaultResponse> {
+    const response = await fetch(`${this.url}/user/revenue`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
