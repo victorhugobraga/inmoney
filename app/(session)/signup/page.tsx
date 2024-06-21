@@ -51,7 +51,8 @@ export default function SignUp() {
   }: SubscriptionData) => {
     Notiflix.Loading.pulse("Criando a sua conta...");
     try {
-      const signUpResponse = await ApiService.signUp(name, email, password);
+      const apiService = new ApiService();
+      const signUpResponse = await apiService.signUp(name, email, password);
       if (!signUpResponse.success) throw new Error(signUpResponse.message);
 
       router.push("/login");

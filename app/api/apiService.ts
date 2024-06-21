@@ -1,4 +1,5 @@
 import { AccountUser } from "@/types/api/account";
+import { GetBalance } from "@/types/api/balance";
 import { IIncreaseRevenue } from "@/types/api/wallet";
 import Cookies from "js-cookie";
 import { DefaultResponse, LoginData } from "../../types/api/session";
@@ -7,8 +8,8 @@ export class ApiService {
   private readonly url: string = process.env.NEXT_PUBLIC_API_URL;
   private token: string;
 
-  public constructor() {
-    this.token = Cookies.get("inmoney_session") ?? "";
+  public constructor(token?: string) {
+    this.token = token ?? Cookies.get("inmoney_session") ?? "tokennotfound";
   }
 
   public async signUp(
@@ -125,5 +126,34 @@ export class ApiService {
       success: false,
       message: "Falha ao conectar ao servidor. Tente novamente mais tarde.",
     };
+  }
+
+  public async getBalance(): Promise<DefaultResponse<GetBalance>> {
+    try {
+      const response = await fetch(`${this.url}/user/balances`, {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        return {
+          success: true,
+          data: data,
+        };
+      }
+
+      return {
+        success: false,
+        message: "Erro ao buscar saldo",
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: "Erro na requsição de saldo: " + e,
+      };
+    }
   }
 }

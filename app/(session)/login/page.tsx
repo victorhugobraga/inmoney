@@ -50,7 +50,8 @@ export default function Login() {
   const handleLogin = async ({ email, password }: LoginData) => {
     Notiflix.Loading.pulse("Entrando...");
     try {
-      const loginResponse = await ApiService.login(email, password);
+      const apiService = new ApiService();
+      const loginResponse = await apiService.login(email, password);
 
       if (!loginResponse.success || !loginResponse?.data)
         throw new Error(loginResponse.message);

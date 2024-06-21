@@ -48,7 +48,11 @@ export default function AddRevenue() {
       value: "R$ 0,00",
       description: "",
       bank: "",
-      date: new Date().toISOString().split("T")[0],
+      date: new Date(
+        new Date().getTime() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .split("T")[0],
       category: "",
     },
   });
