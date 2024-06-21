@@ -26,8 +26,10 @@ import { useForm } from "react-hook-form";
 import * as zod from "zod";
 
 const revenueSchema = zod.object({
-  value: zod.string().min(0.01),
-  description: zod.string().min(3),
+  value: zod.string(),
+  description: zod
+    .string()
+    .min(3, "Descrição precisa ter ao menos 3 caracteres."),
   bank: zod.string(),
   date: zod.string().min(10),
   category: zod.string(),
@@ -66,16 +68,39 @@ export default function AddRevenue() {
     event.target.value = formattedValue;
   };
 
+  function extractMonetaryValue(currencyString: string) {
+    let extractedValue = currencyString.match(/\d+,\d+/);
+
+    if (extractedValue) {
+      let convertedValue = extractedValue[0].replace(",", ".");
+
+      let numericValue = parseFloat(convertedValue);
+
+      return numericValue;
+    } else {
+      return NaN;
+    }
+  }
   const handleSave = async (revenue: RevenueData) => {
     Notiflix.Loading.pulse("Salvando...");
 
+    const value = extractMonetaryValue(revenue.value);
+
+    if (typeof value != "number" || value <= 0) {
+      Notiflix.Notify.failure("Valor precisar ser maior que 0");
+      Notiflix.Loading.remove();
+      return;
+    }
+
     try {
-      const revenueData = await ApiService.increaseRevenue({
-        amount: Number(revenue.value.replace(/\D/g, "")),
+      const apiService = new ApiService();
+      const revenueObj = {
+        amount: value,
         description: revenue.description,
         payment_type_id: 1,
         installments: 0,
-        bank_account_id: revenue.bank === "nenhum" ? 0 : 1,
+        bank_account_id:
+          revenue.bank === "nenhum" || revenue.bank === "" ? null : 1,
         tags: [],
         transactions: [
           {
@@ -84,7 +109,8 @@ export default function AddRevenue() {
             transaction_type: 1,
           },
         ],
-      });
+      };
+      const revenueData = await apiService.increaseRevenue(revenueObj);
       console.log(revenueData);
     } catch (error: any) {
       Notiflix.Report.failure("Erro", error.message, "Ok");
@@ -121,12 +147,15 @@ export default function AddRevenue() {
               {errors.value ? errors.value.message : " "}
             </span>
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1 relative">
             <Label htmlFor="email">Descrição</Label>
             <Input
               placeholder="Descreva a sua receita"
               {...register("description", { required: true })}
             />
+            <span className="text-xs text-muted-foreground absolute">
+              {errors.description ? errors.description.message : " "}
+            </span>
           </div>
 
           <div className="space-y-1">
@@ -151,11 +180,14 @@ export default function AddRevenue() {
               <Label htmlFor="email">Data</Label>
               <Input type="date" {...register("date")} />
             </div>
-            <div className="flex-1 space-y-1">
+            <div className="flex-1 space-y-1 relative">
               <Label htmlFor="email">Categoria</Label>
               <Select>
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
+                  <SelectValue
+                    {...register("category", { required: true })}
+                    placeholder="Selecione"
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="lazer">Lazer</SelectItem>
@@ -163,11 +195,14 @@ export default function AddRevenue() {
                   <SelectItem value="uber">Uber</SelectItem>
                 </SelectContent>
               </Select>
+              <span className="text-xs text-muted-foreground absolute -bottom-4 left-0">
+                {errors.category ? errors.category.message : " "}
+              </span>
             </div>
           </div>
         </div>
-        <DialogFooter>
-          <Button onClick={() => handleSubmit(handleSave)}>Salvar</Button>
+        <DialogFooter className="pt-10">
+          <Button onClick={handleSubmit(handleSave)}>Salvar</Button>
           <DialogClose asChild>
             <Button variant="outline">Cancelar</Button>
           </DialogClose>

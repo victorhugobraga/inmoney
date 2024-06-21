@@ -4,11 +4,15 @@ export declare global {
       NODE_ENV: "production" | "development";
 
       /**
-       * @Description Se estiver rodando o checkout local, ou em um container externo que está usando subdominio (exemplo carrinho.) pode usar esse campo para especificar ele (com o "." no final)
-       * @Sass Não se aplica
+       * @Description url da api
        * @Type string
        */
       NEXT_PUBLIC_API_URL: string;
+      /**
+       * @Description Se as páginas devem ser bloqueadas
+       * @Type boolean
+       */
+      NEXT_PUBLIC_LOCK_PAGES: boolean;
     }
   }
 }

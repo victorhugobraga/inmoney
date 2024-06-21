@@ -29,7 +29,7 @@ export interface IIncreaseRevenue {
   description: string;
   payment_type_id: PaymentType;
   installments: number;
-  bank_account_id: number;
+  bank_account_id?: number | null;
   tags: ITags[];
   transactions: ITransaction[];
 }

@@ -1,11 +1,17 @@
 import { AccountUser } from "@/types/api/account";
 import { IIncreaseRevenue } from "@/types/api/wallet";
+import Cookies from "js-cookie";
 import { DefaultResponse, LoginData } from "../../types/api/session";
 
 export class ApiService {
-  private static readonly url: string = process.env.NEXT_PUBLIC_API_URL;
+  private readonly url: string = process.env.NEXT_PUBLIC_API_URL;
+  private token: string;
 
-  static async signUp(
+  public constructor() {
+    this.token = Cookies.get("inmoney_session") ?? "";
+  }
+
+  public async signUp(
     name: string,
     email: string,
     password: string
@@ -29,7 +35,7 @@ export class ApiService {
     };
   }
 
-  static async login(
+  public async login(
     email: string,
     password: string
   ): Promise<DefaultResponse<LoginData>> {
@@ -57,7 +63,7 @@ export class ApiService {
     };
   }
 
-  static async getUser(token: string): Promise<DefaultResponse<AccountUser>> {
+  public async getUser(token: string): Promise<DefaultResponse<AccountUser>> {
     const response = await fetch(`${this.url}/user`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -79,7 +85,7 @@ export class ApiService {
     };
   }
 
-  static async submitNewsletter(email: string): Promise<DefaultResponse> {
+  public async submitNewsletter(email: string): Promise<DefaultResponse> {
     const response = await fetch(`${this.url}/user/newsletter?email=${email}`, {
       method: "POST",
       headers: {
@@ -98,14 +104,16 @@ export class ApiService {
     };
   }
 
-  static async increaseRevenue(
+  public async increaseRevenue(
     addRevenue: IIncreaseRevenue
   ): Promise<DefaultResponse> {
-    const response = await fetch(`${this.url}/user/revenue`, {
+    const response = await fetch(`${this.url}/payment/posting`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + this.token.toString(),
       },
+      body: JSON.stringify(addRevenue),
     });
 
     if (response.ok) {

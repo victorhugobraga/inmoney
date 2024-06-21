@@ -34,7 +34,8 @@ export default function Newsletter() {
   const handleNewsletter = async ({ email }: NewsletterData) => {
     Notiflix.Loading.pulse("Enviando...");
     try {
-      const newsletterResponse = await ApiService.submitNewsletter(email);
+      const apiService = new ApiService();
+      const newsletterResponse = await apiService.submitNewsletter(email);
 
       if (!newsletterResponse.success)
         throw new Error(newsletterResponse.message);
@@ -56,7 +57,7 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 border-t">
+    <section className="w-full py-12 md:py-24 lg:py-32 border-t" id="subscribe">
       <div className="container grid items-center justify-center gap-8 px-4 text-center md:px-6">
         <div className="space-y-6">
           <h2 className="text-2xl font-bold tracking-tighter md:text-5xl/tight">

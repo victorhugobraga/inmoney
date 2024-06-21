@@ -7,6 +7,10 @@ interface UserLayoutProps {
 }
 
 export default function UserLayout({ children }: UserLayoutProps) {
+  const isPagesLoked = process.env.NEXT_PUBLIC_LOCK_PAGES;
+  if (isPagesLoked) {
+    redirect("/");
+  }
   const cookiesStore = cookies();
 
   if (cookiesStore.get("inmoney_session")) {

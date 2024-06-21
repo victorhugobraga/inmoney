@@ -8,6 +8,11 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const isPagesLoked = process.env.NEXT_PUBLIC_LOCK_PAGES;
+  if (isPagesLoked) {
+    redirect("/");
+  }
+
   const cookiesStore = cookies();
 
   if (!cookiesStore.get("inmoney_session")) {
