@@ -22,6 +22,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowUpSquare } from "lucide-react";
 import Notiflix from "notiflix";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 
@@ -38,6 +39,8 @@ const revenueSchema = zod.object({
 type RevenueData = zod.infer<typeof revenueSchema>;
 
 export default function AddRevenue() {
+  const [isOpen, setIsOpen] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -85,6 +88,7 @@ export default function AddRevenue() {
       return NaN;
     }
   }
+
   const handleSave = async (revenue: RevenueData) => {
     Notiflix.Loading.pulse("Salvando...");
 
@@ -108,14 +112,18 @@ export default function AddRevenue() {
         tags: [],
         transactions: [
           {
-            amount: Number(revenue.value.replace(/\D/g, "")),
+            amount: value,
             description: revenue.description,
             transaction_type: 1,
           },
         ],
       };
       const revenueData = await apiService.increaseRevenue(revenueObj);
-      console.log(revenueData);
+
+      if (revenueData.success) {
+        Notiflix.Notify.success("Receita cadastrada com sucesso");
+        setIsOpen(false);
+      }
     } catch (error: any) {
       Notiflix.Report.failure("Erro", error.message, "Ok");
     } finally {
@@ -124,7 +132,7 @@ export default function AddRevenue() {
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="flex-1">
           <ArrowUpSquare className="w-5 h-5 mr-2" />
@@ -206,7 +214,9 @@ export default function AddRevenue() {
           </div>
         </div>
         <DialogFooter className="pt-10">
-          <Button onClick={handleSubmit(handleSave)}>Salvar</Button>
+          <DialogClose asChild>
+            <Button onClick={handleSubmit(handleSave)}>Salvar</Button>
+          </DialogClose>
           <DialogClose asChild>
             <Button variant="outline">Cancelar</Button>
           </DialogClose>
