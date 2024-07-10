@@ -2,7 +2,7 @@
 import { ApiService } from "@/app/api/apiService";
 import { Balance } from "@/types/api/balance";
 import { Payment, TransactionType } from "@/types/api/wallet";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 interface WalletContextType {
   balance: Balance;
@@ -60,9 +60,9 @@ export function WalletProvider({ children }: WalletProviderProps) {
     }
   }
 
-  useEffect(() => {
-    getBalance();
-  }, []);
+  // useEffect(() => {
+  //   getBalance();
+  // }, []);
 
   return (
     <WalletContext.Provider

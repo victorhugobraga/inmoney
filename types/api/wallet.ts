@@ -1,6 +1,6 @@
 export enum TransactionType {
-  REVENUE = 1,
-  EXPENSE = 2,
+  EXPENSE = 1,
+  REVENUE = 2,
 }
 
 enum PaymentType {

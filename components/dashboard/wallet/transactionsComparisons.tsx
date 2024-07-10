@@ -13,7 +13,8 @@ export default async function TransactionsComparisons() {
   const balance = await apiService.getBalance();
 
   const total = balance.data?.total ?? 0;
-  const balanceValue = balance.data?.balance ?? 0;
+  const revenueTotal = (balance.data?.balance ?? 0) + (balance.data?.cash ?? 0);
+  const expenseTotal = balance.data?.expense ?? 0;
 
   if (!balance.success) console.error("Erro ao buscar saldo", balance.message);
 
@@ -35,7 +36,7 @@ export default async function TransactionsComparisons() {
               </div>
             </div>
           </div>
-          <div className="text-green-500">+{formatMoney(balanceValue)}</div>
+          <div className="text-green-500">+{formatMoney(revenueTotal)}</div>
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -49,7 +50,7 @@ export default async function TransactionsComparisons() {
               </div>
             </div>
           </div>
-          <div className="text-red-500">-$500.00</div>
+          <div className="text-red-500">{formatMoney(expenseTotal)}</div>
         </div>
       </CardContent>
     </Card>
