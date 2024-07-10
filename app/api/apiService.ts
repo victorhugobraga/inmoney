@@ -1,6 +1,6 @@
 import { AccountUser } from "@/types/api/account";
-import { GetBalance } from "@/types/api/balance";
-import { IIncreaseRevenue } from "@/types/api/wallet";
+import { Balance } from "@/types/api/balance";
+import { Payment } from "@/types/api/wallet";
 import Cookies from "js-cookie";
 import { DefaultResponse, LoginData } from "../../types/api/session";
 
@@ -106,7 +106,7 @@ export class ApiService {
   }
 
   public async increaseRevenue(
-    addRevenue: IIncreaseRevenue
+    addRevenue: Payment
   ): Promise<DefaultResponse> {
     const response = await fetch(`${this.url}/payment/posting`, {
       method: "POST",
@@ -128,7 +128,7 @@ export class ApiService {
     };
   }
 
-  public async getBalance(): Promise<DefaultResponse<GetBalance>> {
+  public async getBalance(): Promise<DefaultResponse<Balance>> {
     try {
       const response = await fetch(`${this.url}/user/balances`, {
         headers: {

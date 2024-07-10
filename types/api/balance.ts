@@ -1,4 +1,4 @@
-export interface GetBalance {
+export interface Balance {
   credit: number;
   balance: number;
   cash: number;

@@ -16,11 +16,12 @@ import { cookies } from "next/headers";
 export default async function Account() {
   const cookiesStore = cookies();
   const token = cookiesStore.get("inmoney_session")!.value;
-  const getUserResponse = await ApiService.getUser(token);
+
+  const apiService = new ApiService(token);
+  const getUserResponse = await apiService.getUser(token);
 
   const userResponse = getUserResponse;
   if (userResponse.success && userResponse.data) {
-    console.log(userResponse.data);
   } else return <></>;
 
   const user = userResponse.data;

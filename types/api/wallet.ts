@@ -1,4 +1,4 @@
-enum TransactionType {
+export enum TransactionType {
   REVENUE = 1,
   EXPENSE = 2,
 }
@@ -13,23 +13,22 @@ enum PaymentType {
   OTHER = 7,
 }
 
-interface ITransaction {
+interface Transaction {
   amount: number;
   description: string;
   transaction_type: TransactionType;
 }
 
-interface ITags {
+interface Tags {
   name: string;
   description: string;
 }
 
-export interface IIncreaseRevenue {
-  amount: number;
+export interface Payment {
   description: string;
   payment_type_id: PaymentType;
-  installments: number;
+  installments?: number;
   bank_account_id?: number | null;
-  tags: ITags[];
-  transactions: ITransaction[];
+  tags?: Tags[];
+  transactions: Transaction[];
 }

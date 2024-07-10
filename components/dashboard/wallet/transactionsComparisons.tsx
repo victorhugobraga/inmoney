@@ -1,7 +1,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowDownSquare, ArrowUpSquare } from "lucide-react";
 
-export default function TransactionsComparisons() {
+import { ApiService } from "@/app/api/apiService";
+import { formatMoney } from "@/lib/utils";
+import { cookies } from "next/headers";
+
+export default async function TransactionsComparisons() {
+  const cookieStore = cookies();
+  const token = cookieStore.get("inmoney_session");
+
+  const apiService = new ApiService(token?.value);
+  const balance = await apiService.getBalance();
+
+  const total = balance.data?.total ?? 0;
+  const balanceValue = balance.data?.balance ?? 0;
+
+  if (!balance.success) console.error("Erro ao buscar saldo", balance.message);
+
   return (
     <Card>
       <CardHeader>
@@ -16,12 +31,11 @@ export default function TransactionsComparisons() {
             <div>
               <div className="font-medium">Receitas</div>
               <div className="text-sm text-gray-500 dark:text-gray-400 sm:block hidden">
-                Total de receitas{" "}
-                <small className="text-gray-500">(05/04 - 05/05)</small>
+                Total de receitas
               </div>
             </div>
           </div>
-          <div className="text-green-500">+$1,000.00</div>
+          <div className="text-green-500">+{formatMoney(balanceValue)}</div>
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -31,8 +45,7 @@ export default function TransactionsComparisons() {
             <div>
               <div className="font-medium">Despesas</div>
               <div className="text-sm text-gray-500 dark:text-gray-400 sm:block hidden">
-                Total de despesas{" "}
-                <small className="text-gray-500">(05/04 - 05/05)</small>
+                Total de despesas
               </div>
             </div>
           </div>

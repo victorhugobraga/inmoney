@@ -1,5 +1,4 @@
 "use client";
-import { ApiService } from "@/app/api/apiService";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,9 +18,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { WalletContext } from "@/context/walletContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowDownSquare } from "lucide-react";
 import Notiflix from "notiflix";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 
@@ -39,6 +40,8 @@ const revenueSchema = zod.object({
 type RevenueData = zod.infer<typeof revenueSchema>;
 
 export default function AddExpense() {
+  const { createPaymentPosting } = useContext(WalletContext);
+
   const {
     register,
     handleSubmit,
@@ -47,6 +50,7 @@ export default function AddExpense() {
     resolver: zodResolver(revenueSchema),
     defaultValues: {
       value: "R$ 0,00",
+      installments: 1,
       description: "",
       bank: "",
       date: new Date(
@@ -97,26 +101,23 @@ export default function AddExpense() {
       return;
     }
 
+    const revenueObj = {
+      description: revenue.description,
+      payment_type_id: 1,
+      installments: revenue.installments,
+      bank_account_id:
+        revenue.bank === "nenhum" || revenue.bank === "" ? null : 1,
+      transactions: [
+        {
+          amount: value,
+          description: revenue.description,
+          transaction_type: 1,
+        },
+      ],
+    };
+
     try {
-      const apiService = new ApiService();
-      const revenueObj = {
-        amount: value,
-        description: revenue.description,
-        payment_type_id: 1,
-        installments: 0,
-        bank_account_id:
-          revenue.bank === "nenhum" || revenue.bank === "" ? null : 1,
-        tags: [],
-        transactions: [
-          {
-            amount: Number(revenue.value.replace(/\D/g, "")),
-            description: revenue.description,
-            transaction_type: 1,
-          },
-        ],
-      };
-      const revenueData = await apiService.increaseRevenue(revenueObj);
-      console.log(revenueData);
+      createPaymentPosting(revenueObj);
     } catch (error: any) {
       Notiflix.Report.failure("Erro", error.message, "Ok");
     } finally {
@@ -183,7 +184,9 @@ export default function AddExpense() {
               <Input
                 type="number"
                 placeholder="Quantidade de parcelas"
-                {...register("installments")}
+                {...register("installments", {
+                  valueAsNumber: true,
+                })}
               />
               <span className="text-xs text-muted-foreground absolute">
                 {errors.installments ? errors.installments.message : " "}

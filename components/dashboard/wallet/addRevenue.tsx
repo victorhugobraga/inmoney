@@ -1,5 +1,4 @@
 "use client";
-import { ApiService } from "@/app/api/apiService";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,10 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { WalletContext } from "@/context/walletContext";
+import { extractMonetaryValue, formatMoney } from "@/lib/utils";
+import { TransactionType } from "@/types/api/wallet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowUpSquare } from "lucide-react";
 import Notiflix from "notiflix";
-import { useState } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 
@@ -39,7 +41,7 @@ const revenueSchema = zod.object({
 type RevenueData = zod.infer<typeof revenueSchema>;
 
 export default function AddRevenue() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { createPaymentPosting } = useContext(WalletContext);
 
   const {
     register,
@@ -62,32 +64,16 @@ export default function AddRevenue() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let { value } = event.target;
-    value = value.replace(/\D/g, ""); // Remove todos os caracteres não numéricos
-    let centavos = parseInt(value, 10); // Trata o valor como centavos
-    if (isNaN(centavos)) {
-      centavos = 0;
-    }
-    let reais = centavos / 100; // Converte centavos para reais
-    let formattedValue = reais.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
+    value = value.replace(/\D/g, "");
+
+    let centavos = parseInt(value, 10);
+    if (isNaN(centavos)) centavos = 0;
+
+    let reais = centavos / 100;
+    let formattedValue = formatMoney(reais);
+
     event.target.value = formattedValue;
   };
-
-  function extractMonetaryValue(currencyString: string) {
-    let extractedValue = currencyString.match(/\d+,\d+/);
-
-    if (extractedValue) {
-      let convertedValue = extractedValue[0].replace(",", ".");
-
-      let numericValue = parseFloat(convertedValue);
-
-      return numericValue;
-    } else {
-      return NaN;
-    }
-  }
 
   const handleSave = async (revenue: RevenueData) => {
     Notiflix.Loading.pulse("Salvando...");
@@ -100,30 +86,22 @@ export default function AddRevenue() {
       return;
     }
 
-    try {
-      const apiService = new ApiService();
-      const revenueObj = {
-        amount: value,
-        description: revenue.description,
-        payment_type_id: 1,
-        installments: 0,
-        bank_account_id:
-          revenue.bank === "nenhum" || revenue.bank === "" ? null : 1,
-        tags: [],
-        transactions: [
-          {
-            amount: value,
-            description: revenue.description,
-            transaction_type: 1,
-          },
-        ],
-      };
-      const revenueData = await apiService.increaseRevenue(revenueObj);
+    const revenueObj = {
+      description: revenue.description,
+      payment_type_id: 1,
+      bank_account_id:
+        revenue.bank === "nenhum" || revenue.bank === "" ? null : 1,
+      transactions: [
+        {
+          amount: value,
+          description: revenue.description,
+          transaction_type: TransactionType.REVENUE,
+        },
+      ],
+    };
 
-      if (revenueData.success) {
-        Notiflix.Notify.success("Receita cadastrada com sucesso");
-        setIsOpen(false);
-      }
+    try {
+      createPaymentPosting(revenueObj);
     } catch (error: any) {
       Notiflix.Report.failure("Erro", error.message, "Ok");
     } finally {
@@ -132,7 +110,7 @@ export default function AddRevenue() {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" className="flex-1">
           <ArrowUpSquare className="w-5 h-5 mr-2" />

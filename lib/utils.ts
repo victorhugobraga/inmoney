@@ -14,3 +14,10 @@ export const formatMoney = (value: number, zeroInReal?: boolean): string => {
 
   return formattedValue;
 };
+
+export function extractMonetaryValue(currency: string) {
+  let cleanedString = currency.replace(/\s?R\$\s?/, "").replace(/\./g, "").replace(/,/, ".");
+  let numericValue = parseFloat(cleanedString);
+
+  return isNaN(numericValue) ? NaN : numericValue;
+}
