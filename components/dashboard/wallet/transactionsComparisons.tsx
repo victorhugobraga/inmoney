@@ -1,23 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowDownSquare, ArrowUpSquare } from "lucide-react";
 
-import { ApiService } from "@/app/api/apiService";
 import { formatMoney } from "@/lib/utils";
-import { cookies } from "next/headers";
 
 export default async function TransactionsComparisons() {
-  const cookieStore = cookies();
-  const token = cookieStore.get("inmoney_session");
-
-  const apiService = new ApiService(token?.value);
-  const balance = await apiService.getBalance();
-
-  const total = balance.data?.total ?? 0;
-  const revenueTotal = (balance.data?.balance ?? 0) + (balance.data?.cash ?? 0);
-  const expenseTotal = balance.data?.expense ?? 0;
-
-  if (!balance.success) console.error("Erro ao buscar saldo", balance.message);
-
   return (
     <Card>
       <CardHeader>
@@ -36,7 +22,7 @@ export default async function TransactionsComparisons() {
               </div>
             </div>
           </div>
-          <div className="text-green-500">+{formatMoney(revenueTotal)}</div>
+          <div className="text-green-500">+{formatMoney(20)}</div>
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -50,7 +36,7 @@ export default async function TransactionsComparisons() {
               </div>
             </div>
           </div>
-          <div className="text-red-500">{formatMoney(expenseTotal)}</div>
+          <div className="text-red-500">{formatMoney(20)}</div>
         </div>
       </CardContent>
     </Card>

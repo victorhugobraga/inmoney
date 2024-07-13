@@ -60,10 +60,6 @@ export function WalletProvider({ children }: WalletProviderProps) {
     }
   }
 
-  // useEffect(() => {
-  //   getBalance();
-  // }, []);
-
   return (
     <WalletContext.Provider
       value={{ balance, getBalance, createPaymentPosting }}
